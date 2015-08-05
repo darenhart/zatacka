@@ -42,7 +42,7 @@ function Player(p) {
 		afterDieCount = 0;
 		dying = false;
 		this.dead = false;
-		x = (game.width-100) * Math.random() +50;
+		x = (game.width-score.width-100) * Math.random() +50;
 		y = (game.height-100) * Math.random() +50;
 		angle = Math.random()*360;
 		this.getNextHole();
@@ -74,7 +74,7 @@ function Player(p) {
 			}
 
 			// get speed according to fps
-			if (game.fps.val && game.fps.val > 10) {
+			if (game.fps.val && game.fps.val > 25) {
 				var s = speed * (60/game.fps.val);
 			} else {
 				var s = speed;
@@ -175,11 +175,12 @@ function Players() {
 	this.maxRounds;
 	
 	this.players = [
-		{name: 'blue',  color: '#0404EE', right: 'right', left: 'left'},
-		{name: 'green', color: '#04EE04', right: 's', left: 'a'},
-		{name: 'red',   color: '#EE0404', right: 'b', left: 'v'},
-		{name: 'yellow',color: '#EEEE04', right: '2', left: '1'},
-		{name: 'cyan',  color: '#04EEEE', right: '0', left: '9'}
+		{name: 'red',   color: '#f82801', left: '1',   right: 'q'},
+		{name: 'yellow',color: '#c0c001', left: 'Shift', right: 'Ctrl'},
+		{name: 'orange',color: '#f87801', left: 'n',   right: 'm'},
+		{name: 'green', color: '#01c801', left: 'left', right: 'down'},
+		{name: 'pink',  color: '#d850b0', left: 'o', right: 'p'},
+		{name: 'blue',  color: '#02a0c8', left: 'mouse1', right: 'mouse2'}
 	];
 
 	this.pool = [];

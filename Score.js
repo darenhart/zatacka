@@ -1,6 +1,6 @@
 function Score() {
 
-	this.context.font="italic 70px Sans-Serif";
+	this.context.font="italic 75px Sans-Serif";
 	this.context.textAlign="right"; 
 	var players = game.players.pool;
 	var totalPlayers = game.players.players.length;
@@ -12,7 +12,7 @@ function Score() {
 		for (var i = 0; i < players.length; i++) {
 			var p = players[i];
 			var x = this.width*3/4 - 10;
-			var y = game.height*0.8 * i/totalPlayers + 100;
+			var y = game.height*0.9 * i/totalPlayers + 80;
 
 			this.context.fillStyle=p.color;
 			this.context.fillText(p.score,x,y);

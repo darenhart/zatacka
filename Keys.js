@@ -3,28 +3,36 @@
 // The keycodes that will be mapped when a user presses a button.
 // Original code by Doug McInnes
 KEY_CODES = {
-	0: 'mouse',
+	1: 'mouse1',
+	2: 'mouse2',
 	32: 'space',
 	37: 'left',
 	38: 'up',
 	39: 'right',
 	40: 'down',
+	17: 'Ctrl',
+	16: 'Shift',
 	48: '0',
 	49: '1',
+	81: 'q',
 	50: '2',
 	57: '9',
-	65: 'a',
-	66: 'b',
-	86: 'v',
-	83: 's',
+
+	77: 'm',
+	78: 'n',
+
+	79: 'o',
+	80: 'p',
 /*
+	65: 'a',
+	83: 's',
+
 	51: '3',
 	52: '4',
 	53: '5',
 	54: '6',
 	55: '7',
 	56: '8',
-
 	67: 'c',
 	68: 'd',
 	69: 'e',
@@ -35,11 +43,9 @@ KEY_CODES = {
 	74: 'j',
 	75: 'k',
 	76: 'l',
-	77: 'm',
-	78: 'n',
-	79: 'o',
-	80: 'p',
-	81: 'q',
+
+	66: 'b',
+	86: 'v',
 	82: 'r',
 	84: 't',
 	85: 'u',
@@ -86,4 +92,29 @@ document.onkeyup = function(e) {
     KEY_STATUS[KEY_CODES[keyCode]] = false;
   }
 }
+
+
+
+// mouse
+document.body.addEventListener('mousedown', function (e){
+    if(e.button === 2){
+		KEY_STATUS.mouse2 = true; // right
+		return false;
+    }
+    else if(e.button === 0){
+		KEY_STATUS.mouse1 = true; // left
+    }
+}, false);
+
+document.body.addEventListener('mouseup', function (e){
+    if(e.button === 2){
+		KEY_STATUS.mouse2 = false;
+		return false;
+    }
+    else if(e.button === 0){
+		KEY_STATUS.mouse1 = false;
+    }
+}, false);
+
+
 
