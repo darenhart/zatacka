@@ -1,14 +1,18 @@
 function Score() {
 
-	this.context.font="italic 75px Sans-Serif";
-	this.context.textAlign="right"; 
 	var players = game.players.pool;
 	var totalPlayers = game.players.players.length;
 
-	this.print = function() {
+	this.draw = function() {
 	
 		this.context.clearRect(0, 0, 300, 1000);
 
+		this.context.fillStyle='#3c3c3c';
+		this.context.rect(0,0,this.width,game.height);
+		this.context.fill();
+
+		this.context.font="italic 75px Sans-Serif";
+		this.context.textAlign="right"; 
 		for (var i = 0; i < players.length; i++) {
 			var p = players[i];
 			var x = this.width*3/4 - 10;
@@ -26,7 +30,7 @@ function Score() {
 				p.score++;
 			}			
 		}
-		this.print();
+		this.draw();
 	};
 	
 }

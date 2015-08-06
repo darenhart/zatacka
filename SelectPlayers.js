@@ -1,14 +1,14 @@
 function SelectPlayers() {
 
-	this.context.font="bold 20px Courier";
 	var players = game.players.players;
 
 	this.show = function() {
+		this.context.font="bold 20px Courier";
+		this.context.textAlign="left"; 
 		for (var i = 0; i < players.length; i++) {
 			var p = players[i];
 			var x = game.width/4;
 			var y = (game.height*0.7/players.length)*i + 80;
-			this.context.textAlign="left"; 
 			this.context.fillStyle=p.color;
 			this.context.fillText('('+p.left+' '+p.right+')',x,y);
 		}
@@ -47,6 +47,10 @@ function SelectPlayers() {
 		this.context.fillStyle="white";
 		this.context.textAlign="center"; 
 		this.context.fillText('Press space to start',game.width/2,game.height*7/8);
+	};
+	
+	this.clear = function() {
+		this.context.clearRect(0, 0, game.width, game.height);
 	};
 	
 }
