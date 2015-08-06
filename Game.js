@@ -1,9 +1,11 @@
+'use strict';
 
 var imageRepository = new function() {
 
 	// Set images src
 	var imgs = {
-		splash: "img/achtung.png",
+		splash: "img/achtung-small.png",
+		end:    "img/achtung-konec-hry.png",
 		red:    "img/red.png",
 		yellow: "img/yellow.png",
 		orange: "img/orange.png",
@@ -41,6 +43,9 @@ function Background() {
 		this.context.strokeStyle="#CCCC55";
 		this.context.stroke();
 	};
+	this.clear = function() {
+		this.context.clearRect(0,0, game.width, game.height);
+	};
 }
 
 function SplashScreen() {
@@ -69,6 +74,50 @@ function SplashScreen() {
 	};
 }
 
+function EndScreen() {
+
+	this.active = false;
+	var counter = 0;
+	var waitTime = 100;
+
+	this.draw = function() {
+		this.active = true;
+		counter = 0;
+		// KONEC HRY
+		var x = game.width/2 - imageRepository.end.width/2; 
+		var y = game.height*5/6 - imageRepository.end.height;
+		this.context.drawImage(imageRepository.end, x, y);
+		
+		// Score
+		var players = game.players.pool;
+		var totalPlayers = game.players.playerTemplates.length;
+		this.context.font="bold 30px Sans-Serif";
+		this.context.textAlign="right"; 
+		for (var i = 0; i < players.length; i++) {
+			var p = players[i];
+			var x = game.width/2;
+			var y = (game.height*4/6)*i / totalPlayers + 80;
+
+			this.context.fillStyle=p.color;
+			this.context.fillText(p.score,x,y);
+		}
+	};
+
+	this.listen = function() {
+		counter++;
+		if (KEY_STATUS.space && counter > waitTime) {
+			this.clear();
+			game.selectScreen();
+		}
+	};
+	this.clear = function() {
+		this.active = false;
+		this.context.clearRect(0, 0, game.width, game.height);
+	};
+}
+
+
+
 function Game() {
 
 	this.started = false;
@@ -79,11 +128,11 @@ function Game() {
 		this.layers = {
 			'main':{},
 			'texts':{},
-			'select':{},
+			'screens':{},
 			'score':{}
 		};
-		
-		for (key in this.layers) {
+
+		for (var key in this.layers) {
 			// check if canvas exists
 			if (document.getElementById(key)) {
 				this.layers[key].element = document.getElementById(key);
@@ -100,55 +149,57 @@ function Game() {
 		Player.prototype.context       = this.layers.main.context;
 		Players.prototype.context      = this.layers.main.context;
 		Background.prototype.context   = this.layers.main.context;
-		SplashScreen.prototype.context = this.layers.select.context;
-		SelectPlayers.prototype.context= this.layers.select.context;
+		SplashScreen.prototype.context = this.layers.screens.context;
+		EndScreen.prototype.context    = this.layers.screens.context;
+		SelectPlayers.prototype.context= this.layers.screens.context;
 		Fps.prototype.context          = this.layers.texts.context;
 		Score.prototype.context        = this.layers.score.context;
 
 		this.background = new Background();
 		this.splash = new SplashScreen();
-		this.fps = new Fps();
+		this.end = new EndScreen();
 		this.players = new Players();
 		this.score = new Score();
+		this.fps = new Fps();
 		this.selectPlayers = new SelectPlayers();
-		
+
 		this.splashScreen();
+		animate();
 	};
-	
+
 	this.onSizeChange = function() {
 		this.calculateSize();
-		
+
 		if (game.started) {
 			this.background.draw();
 			this.score.draw();
+		} else if (game.splash.active) {
+			game.splashScreen();
+		} else if (game.selectPlayers.active) {
+			this.selectPlayers.show();
 		} else {
-			if (game.splash.active) {
-				game.splashScreen();
-			} else {
-				this.selectPlayers.show();
-			}
+			game.end.draw();
 		}
 	};
-	
+
 	this.calculateSize = function() {
 		this.width = window.innerWidth;
 		this.height = window.innerHeight;
-		for (key in this.layers) {
+		for (var key in this.layers) {
 			this.layers[key].element.width = this.width;
 			this.layers[key].element.height = this.height;
 		}
 		this.layers.score.element.style.left = this.width - Score.prototype.width+'px';
 		this.layers.score.element.width = Score.prototype.width;
 	};
-	
+
 	this.splashScreen = function() {
-		document.body.style.cursor = 'initial'
+		document.body.style.cursor = 'initial';
 		this.started = false;
 		this.selectPlayers.clear();
 		this.splash.draw();
-		animate();
 	};
-	
+
 	this.selectScreen = function() {
 		this.started = false;
 		this.splash.clear();
@@ -156,19 +207,26 @@ function Game() {
 	}
 
 	this.start = function() {
-		this.selectPlayers.clear();
-		// hide cursor
-		document.body.style.cursor = 'none'
+		document.body.style.cursor = 'none';
 		this.started = true;
-		this.players.createPlayers();
 		this.players.maxRounds = 15;
+		this.players.init();
+		this.selectPlayers.clear();
 		this.score.draw();
 		this.newRound();
 	};
-	
+
 	this.newRound = function() {
-		this.players.start();
+		this.players.startRound();
 		this.background.draw();
+	};
+
+	this.finish = function() {
+		document.body.style.cursor = 'initial';
+		game.background.clear();
+		game.score.clear();
+		game.end.draw();
+		this.started = false;
 	};
 
 }
@@ -177,15 +235,16 @@ function Game() {
 function animate() {
 	requestAnimFrame( animate );
 
+	game.fps.update();
+
 	if (game.started) {
 		game.players.animate();
-		game.fps.update();
+	} else if (game.splash.active) {
+		game.splash.listen();
+	} else if (game.selectPlayers.active) {
+		game.selectPlayers.listen();
 	} else {
-		if (game.splash.active) {
-			game.splash.listen();
-		} else {
-			game.selectPlayers.listen();
-		}
+		game.end.listen();
 	}
 }
 

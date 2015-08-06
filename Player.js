@@ -1,49 +1,42 @@
+'use strict';
+
 function Player(p) {
 
-	this.name = p.name;
-	this.color = p.color;
-	this.playerCount = p.count;
-	
-	// line size
 	var radius = 3;
-	
-	// random position and angle
+	var speed = 1.6; // 1.2 / 1.6 
+	var angleSpeed = 2; // 1.6 / 3
+	var collisionTolerance = 30; // from 0 to 70;
+	var startTime = 40;
+	var afterDieTime = 0;
+	var afterDieCount = 0;
+	var holeRate = 450; //450
+	var holeRateRnd = 200; //200
+	var holeSize = 13; // 13
+	var holeSizeRnd = 3;
+	var holeCounter = 0;
+
 	var x;
 	var y;
 	var angle;
-	
-	var speed = 1.6; // 1.2 / 2 
-	var angleSpeed = 2; // 1.6 / 3
-
-	var collisionTolerance = 30; // from 0 to 70;
-
-	var startTime = 40;
-
-	this.dead = false;
 	var dying = false;
-	var afterDieTime = 1;
-	var afterDieCount = 0;
-
+	var counter = 0;
 	var hole = false;
-	var holeRate = 450; //450
-	var holeRateRnd = 200; //200
-	var holeSize = 13;
-	var holeSizeRnd = 3;
 	var nextHole;
 	var nextHoleSize;
-	var holeCounter = 0;
-
+	this.dead = false;
 	this.score = 0;
+	this.name = p.name;
+	this.color = p.color;
+	this.playerCount = p.count;
 
-	var counter = 0;
-		
 	this.init = function() {
 		counter = 0;
 		holeCounter = 0;
 		afterDieCount = 0;
 		dying = false;
+		hole = false;
 		this.dead = false;
-		
+
 		var startOnCenter = false;
 		if (startOnCenter) {
 			x = (game.width-score.width)/2;
@@ -71,11 +64,13 @@ function Player(p) {
 		if (counter < startTime && counter > 2) {
 			return;
 		}
-		
+
 		if (dying && afterDieCount > afterDieTime) {
 			this.dead = true;
-			game.score.add(this.name);
-			game.players.checkRoundOver();
+			if (game.players.running) {
+				game.score.add(this.name);
+				game.players.checkRoundOver();
+			}
 		} else {
 
 			if (dying) {
@@ -83,14 +78,14 @@ function Player(p) {
 			}
 
 			// get speed according to fps
-			if (game.fps.val && game.fps.val > 25) {
+			if (game.fps.val && game.fps.val > 20) {
 				var s = speed * (60/game.fps.val);
 			} else {
 				var s = speed;
 			}
 
 			// get angle according to fps
-			if (game.fps.val && game.fps.val > 25) {
+			if (game.fps.val && game.fps.val > 20) {
 				var angSpeed = angleSpeed * (60/game.fps.val);
 			} else {
 				var angSpeed = angleSpeed;
@@ -139,10 +134,16 @@ function Player(p) {
 				hole = false;
 				holeCounter = 0;
 			}
-		}			
+		}
 	};
 
 	this.isColliding = function() {
+
+		if (x < 0 || x > game.width-game.score.width ||
+			y < 0 || y > game.height) {
+			return true;
+		}
+
 		var rcol = radius+2;
 		var rad1 = (angle+collisionTolerance) * Math.PI/180;
 		var y1 = Math.round(y + rcol*(Math.cos(rad1)));
@@ -176,21 +177,39 @@ function Player(p) {
 }
 
 function Players() {
-	
+
 	this.running = false;
 	this.roundCount = 0;
 	this.maxRounds;
-	
-	this.players = [
-		{count: 1,name: 'red',   color: '#f82801', left: '1',   right: 'q'},
-		{count: 2,name: 'yellow',color: '#c0c001', left: 'Shift', right: 'Ctrl'},
-		{count: 3,name: 'orange',color: '#f87801', left: 'n',   right: 'm'},
-		{count: 4,name: 'green', color: '#01c801', left: 'left', right: 'down'},
-		{count: 5,name: 'pink',  color: '#d850b0', left: 'o', right: 'p'},
-		{count: 6,name: 'blue',  color: '#02a0c8', left: 'mouse1', right: 'mouse2'}
+
+	this.playerTemplates = [
+		{ready: false, count: 1,name: 'red',   color: '#f82801', left: '1',     right: 'q'},
+		{ready: false, count: 2,name: 'yellow',color: '#c0c001', left: 'Shift', right: 'Ctrl'},
+		{ready: false, count: 3,name: 'orange',color: '#f87801', left: 'n',     right: 'm'},
+		{ready: false, count: 4,name: 'green', color: '#01c801', left: 'left',  right: 'down'},
+		{ready: false, count: 5,name: 'pink',  color: '#d850b0', left: 'o',     right: 'p'},
+		{ready: false, count: 6,name: 'blue',  color: '#02a0c8', left: 'mouse1',right: 'mouse2'}
 	];
 
-	this.pool = [];
+	this.init = function() {
+		this.roundCount = 0;
+		this.pool = [];
+		for (var i = 0; i < this.playerTemplates.length; i++) {
+			var p = this.playerTemplates[i];
+			if (p.ready) {
+				var p = new Player(this.playerTemplates[i]);
+				this.pool.push(p);
+			}
+		}
+	};
+
+	this.startRound = function() {
+		this.running = true;
+		this.context.clearRect(0, 0, game.width, game.height);
+		for (var i = 0; i < this.pool.length; i++) {
+			this.pool[i].init();
+		}
+	};
 
 	this.animate = function() {
 		if (this.running) {
@@ -200,34 +219,17 @@ function Players() {
 				}
 			}
 		} else {
-			if (KEY_STATUS.space && this.roundCount <= this.maxRounds) {
-				game.newRound();
+			if (KEY_STATUS.space) {
+				if (this.roundCount < this.maxRounds) {
+					game.newRound();
+				} else {
+					this.running = false;
+					game.finish();
+				}
 			}
 		}
 	};
-	
-	this.newPlayer = function(i) {
-		var p = new Player(this.players[i]);
-		this.pool.push(p);
-	}
-	
-	this.createPlayers = function() {
-		for (var i = 0; i < this.players.length; i++) {
-			var p = this.players[i];
-			if (p.ready) {
-				this.newPlayer(i);
-			}
-		}
-	};
-	
-	this.start = function() {
-		this.running = true;
-		this.context.clearRect(0, 0, game.width, game.height);
-		for (var i = 0; i < this.pool.length; i++) {
-			this.pool[i].init();
-		}
-	};
-	
+
 	this.checkRoundOver = function() {
 		var deadCount = 0;
 		for (var i = 0; i < this.pool.length; i++) {
@@ -237,8 +239,11 @@ function Players() {
 			if (deadCount >= this.pool.length-1) {
 				this.running = false;
 				this.roundCount++;
+				break;
 			}
-		}		
+		}
 	};
-	
+
+	this.init();
+
 }

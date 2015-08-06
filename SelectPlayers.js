@@ -1,14 +1,18 @@
+'use strict';
+
 function SelectPlayers() {
 
-	var players = game.players.players;
+	var players;
+	this.active = false;
 
 	this.show = function() {
+		this.active = true;
 		this.context.font="bold 20px Courier";
 		this.context.textAlign="left"; 
 		for (var i = 0; i < players.length; i++) {
 			var p = players[i];
-			var x = game.width/4;
-			var y = (game.height*0.7/players.length)*i + 80;
+			var x = game.width/5;
+			var y = (game.height*0.6/players.length)*i + 80;
 			this.context.fillStyle=p.color;
 			this.context.fillText('('+p.left+' '+p.right+')',x,y);
 		}
@@ -17,16 +21,17 @@ function SelectPlayers() {
 	};
 
 	this.listen = function() {
+		players = game.players.playerTemplates;
 		for (var i = 0; i < players.length; i++) {
 			var p = players[i];
-			var x = game.width/2;
-			var y = (game.height*0.7/players.length)*i + 80 - imageRepository[p.name].height;
+			var x = (game.width/5) + 220;
+			var y = (game.height*0.6/players.length)*i + 80 - imageRepository[p.name].height;
 			if (KEY_STATUS[p.left]) {
 				p.ready = true;
 				this.context.drawImage(imageRepository[p.name], x, y);
 			} else if (KEY_STATUS[p.right]) {
 				p.ready = false;
-				this.context.clearRect(x, y-40, 300, 60);
+				this.context.clearRect(x,y, imageRepository[p.name].width, imageRepository[p.name].height);
 			}
 		}
 		
@@ -50,6 +55,11 @@ function SelectPlayers() {
 	};
 	
 	this.clear = function() {
+		players = game.players.playerTemplates;
+		for (var i = 0; i < players.length; i++) {
+			players[i].ready = false;
+		}
+		this.active = false;
 		this.context.clearRect(0, 0, game.width, game.height);
 	};
 	

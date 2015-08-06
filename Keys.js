@@ -1,8 +1,9 @@
+'use strict';
 
 //// CONTROL KEYS ////
 // The keycodes that will be mapped when a user presses a button.
 // Original code by Doug McInnes
-KEY_CODES = {
+var KEY_CODES = {
 	1: 'mouse1',
 	2: 'mouse2',
 	32: 'space',
@@ -59,8 +60,8 @@ KEY_CODES = {
 // to false. Checking true/flase is the quickest way to check status
 // of a key press and which one was pressed when determining
 // when to move and which direction.
-KEY_STATUS = {};
-for (code in KEY_CODES) {
+var KEY_STATUS = {};
+for (var code in KEY_CODES) {
   KEY_STATUS[ KEY_CODES[ code ]] = false;
 }
 /**
