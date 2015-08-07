@@ -138,7 +138,8 @@ function Game() {
 				this.layers[key].element = document.getElementById(key);
 			} else {
 				this.layers[key].element = document.createElement('canvas');
-				document.body.appendChild(this.layers[key].element);
+				//document.body.appendChild(this.layers[key].element);
+				document.getElementById('game').appendChild(this.layers[key].element);
 				this.layers[key].element.id = key;
 			}
 			this.layers[key].context = this.layers[key].element.getContext('2d');
@@ -162,6 +163,7 @@ function Game() {
 		this.score = new Score();
 		this.fps = new Fps();
 		this.selectPlayers = new SelectPlayers();
+		this.advanced = new Advanced();
 
 		this.splashScreen();
 		animate();
@@ -203,14 +205,16 @@ function Game() {
 	this.selectScreen = function() {
 		this.started = false;
 		this.splash.clear();
+		this.advanced.show();
 		this.selectPlayers.show();
 	}
 
 	this.start = function() {
 		document.body.style.cursor = 'none';
 		this.started = true;
-		this.players.maxRounds = 15;
-		this.players.init();
+		this.advanced.hide();
+		var confs = this.advanced.getConfs();
+		this.players.init(confs);
 		this.selectPlayers.clear();
 		this.score.draw();
 		this.newRound();

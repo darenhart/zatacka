@@ -13,7 +13,10 @@ function Fps() {
 		var delta = (new Date().getTime() - lastCalledTime)/1000;
 		lastCalledTime = Date.now();
 		this.val = Math.round(1/delta);
-		this.drawFps();
+
+		if (game.advanced.active && game.started) {
+			this.drawFps();
+		}
 	};
 
 	this.drawFps = function() {

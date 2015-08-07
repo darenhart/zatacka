@@ -1,33 +1,41 @@
 'use strict';
 
-function Player(p) {
+function Player(playerTemplate, confs) {
 
-	var radius = 3;
-	var speed = 1.6; // 1.2 / 1.6 
-	var angleSpeed = 2; // 1.6 / 3
+	this.size;
+	this.speed;
+	this.curveSpeed;
+	this.holeRate;
+	this.holeRateRnd;
+	this.holeSize;
+	this.holeSizeRnd;
+
+	var afterDieTime = 0; // keep live after die
 	var collisionTolerance = 30; // from 0 to 70;
-	var startTime = 40;
-	var afterDieTime = 0;
-	var afterDieCount = 0;
-	var holeRate = 450; //450
-	var holeRateRnd = 200; //200
-	var holeSize = 13; // 13
-	var holeSizeRnd = 3;
-	var holeCounter = 0;
+	var startTime = 40; // wait time after born
 
 	var x;
 	var y;
 	var angle;
 	var dying = false;
+	var afterDieCount = 0;
 	var counter = 0;
 	var hole = false;
+	var holeCounter = 0;
 	var nextHole;
 	var nextHoleSize;
 	this.dead = false;
 	this.score = 0;
-	this.name = p.name;
-	this.color = p.color;
-	this.playerCount = p.count;
+
+	// set player template
+	for (var key in playerTemplate) {
+		this[key] = playerTemplate[key];
+	}
+	// set configurations
+	for (var key in confs) {
+		this[key] = confs[key];
+	}
+
 
 	this.init = function() {
 		counter = 0;
@@ -52,10 +60,10 @@ function Player(p) {
 	};
 
 	this.getNextHole = function() {
-		nextHole = holeRate + (Math.random()*2-1)*holeRateRnd;
+		nextHole = this.holeRate + (Math.random()*2-1)*this.holeRateRnd;
 	};
 	this.getNextHoleSize = function() {
-		nextHoleSize = holeSize + (Math.random()*2-1)*holeSizeRnd;
+		nextHoleSize = this.holeSize + (Math.random()*2-1)*this.holeSizeRnd;
 	};
 	
 	this.draw = function() {
@@ -79,22 +87,22 @@ function Player(p) {
 
 			// get speed according to fps
 			if (game.fps.val && game.fps.val > 20) {
-				var s = speed * (60/game.fps.val);
+				var s = this.speed * (60/game.fps.val);
 			} else {
-				var s = speed;
+				var s = this.speed;
 			}
 
 			// get angle according to fps
 			if (game.fps.val && game.fps.val > 20) {
-				var angSpeed = angleSpeed * (60/game.fps.val);
+				var angSpeed = this.curveSpeed * (60/game.fps.val);
 			} else {
-				var angSpeed = angleSpeed;
+				var angSpeed = this.curveSpeed;
 			}
 
 			// get controls
-			if (KEY_STATUS[p.left]) {
+			if (KEY_STATUS[this.left]) {
 				angle += angSpeed;
-			} else if (KEY_STATUS[p.right]) {
+			} else if (KEY_STATUS[this.right]) {
 				angle -= angSpeed;
 			}
 
@@ -119,8 +127,8 @@ function Player(p) {
 
 	this.drawStroke = function() {
 		this.context.beginPath();
-		this.context.fillStyle = p.color;
-		this.context.arc(x,y,radius,0,2*Math.PI);
+		this.context.fillStyle = this.color;
+		this.context.arc(x,y,this.size,0,2*Math.PI);
 		this.context.fill();
 	};
 
@@ -144,7 +152,7 @@ function Player(p) {
 			return true;
 		}
 
-		var rcol = radius+2;
+		var rcol = this.size+2;
 		var rad1 = (angle+collisionTolerance) * Math.PI/180;
 		var y1 = Math.round(y + rcol*(Math.cos(rad1)));
 		var x1 = Math.round(x + rcol*(Math.sin(rad1)));
@@ -191,13 +199,14 @@ function Players() {
 		{ready: false, count: 6,name: 'blue',  color: '#02a0c8', left: 'mouse1',right: 'mouse2'}
 	];
 
-	this.init = function() {
+	this.init = function(confs) {
+		this.maxRounds = confs.maxRounds;
 		this.roundCount = 0;
 		this.pool = [];
 		for (var i = 0; i < this.playerTemplates.length; i++) {
 			var p = this.playerTemplates[i];
 			if (p.ready) {
-				var p = new Player(this.playerTemplates[i]);
+				var p = new Player(this.playerTemplates[i], confs);
 				this.pool.push(p);
 			}
 		}
@@ -243,7 +252,5 @@ function Players() {
 			}
 		}
 	};
-
-	this.init();
 
 }

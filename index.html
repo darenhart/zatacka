@@ -22,14 +22,115 @@
 			#texts {
 				z-index: -1;
 			}
+			
+			#advanced {
+				float: right;
+				margin-top: 10px;
+				margin-right: 10px;
+				color: #555;
+				width: 180px;
+				display: none;
+			}
+			button {
+				background-color: #111;
+				color: #555;
+			}
+			#advanced-button {
+				float: right;
+				width: 80px;
+				height: 30px;
+				border: 1px solid #333;
+				color: #555;
+			}
+			#advanced-button.classic {
+				background-color: black;
+				border: 1px solid #222;
+				color: #333;
+			}
+			label, button, input, h4 {
+				font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+			}
+			h4 {
+				margin-bottom: 5px;
+			}
+			input {
+				margin-left:4px;
+				float:right;
+				width: 40px;
+				background-color: black;
+				border: 1px solid #333;
+				color: #555;
+				padding: 2px;
+			}
+			#form {
+				margin-top: 40px;
+				display: none;
+			}
+			.input {
+				height: 22px;
+			}
+			.preset {
+				border: 1px solid #333;
+				width: 40%;
+			}
+			
 		</style>
 	</head>
 	<body oncontextmenu="return false" onresize="game.onSizeChange()">
+
+		<div id="game"></div>
+
+		<div id="advanced">
+			<button id="advanced-button" class="classic">Classic</button>
+			<div id="form">
+				<h4>Presets</h4>
+				<button data-preset="agility" class="preset">Agility</button>
+				<button data-preset="strategy" class="preset">Strategy</button>
+				<button data-preset="classic" class="preset" id="classic">Classic</button>
+				<h4>Game</h4>
+				<div class="input">
+					<label>Rounds</label>
+					<input id="maxRounds">
+				</div>
+				<h4>Player</h4>
+				<div class="input">
+					<label>Size</label>
+					<input id="size">
+				</div>
+				<div class="input">
+					<label>Speed</label>
+					<input id="speed">
+				</div>
+				<div class="input">
+					<label>Curve speed</label>
+					<input id="curveSpeed">
+				</div>
+				<div class="input">
+					<label>Hole rate</label>
+					<input id="holeRate">
+				</div>
+				<div class="input">
+					<label>Hole rate rnd</label>
+					<input id="holeRateRnd">
+				</div>
+				<div class="input">
+					<label>Hole size</label>
+					<input id="holeSize">
+				</div>
+				<div class="input">
+					<label>Hole size rnd</label>
+					<input id="holeSizeRnd">
+				</div>
+			</div>
+		</div>
+
+		<script src="conf.js"></script>
 		<script src="Keys.js"></script>
 		<script src="SelectPlayers.js"></script>
 		<script src="Score.js"></script>
 		<script src="Player.js"></script>
 		<script src="Fps.js"></script>
+		<script src="Advanced.js"></script>
 		<script src="Game.js"></script>
 	</body>
 </html>

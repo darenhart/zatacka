@@ -13,11 +13,8 @@ var KEY_CODES = {
 	40: 'down',
 	17: 'Ctrl',
 	16: 'Shift',
-	48: '0',
 	49: '1',
 	81: 'q',
-	50: '2',
-	57: '9',
 
 	77: 'm',
 	78: 'n',
@@ -28,6 +25,9 @@ var KEY_CODES = {
 	65: 'a',
 	83: 's',
 
+	57: '9',
+	48: '0',
+	50: '2',
 	51: '3',
 	52: '4',
 	53: '5',
@@ -97,7 +97,7 @@ document.onkeyup = function(e) {
 
 
 // mouse
-document.body.addEventListener('mousedown', function (e){
+document.getElementById('game').addEventListener('mousedown', function (e){
     if(e.button === 2){
 		KEY_STATUS.mouse2 = true; // right
 		return false;
@@ -107,7 +107,7 @@ document.body.addEventListener('mousedown', function (e){
     }
 }, false);
 
-document.body.addEventListener('mouseup', function (e){
+document.getElementById('game').addEventListener('mouseup', function (e){
     if(e.button === 2){
 		KEY_STATUS.mouse2 = false;
 		return false;
