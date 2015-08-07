@@ -6,7 +6,7 @@ var configurations = {
 		curveSpeed: 2,
 		holeRate: 450,
 		holeRateRnd: 200,
-		holeSize: 13,
+		holeSize: 11,
 		holeSizeRnd: 3
 	},
 	agility: {
