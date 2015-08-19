@@ -1,0 +1,76 @@
+body {
+	margin: 0px;
+	background-color: black;
+}
+canvas {
+	position: absolute;
+}
+#screens {
+	z-index: -4;
+}
+#main {
+	z-index: -3;
+}
+#score {
+	z-index: -2;
+}
+#texts {
+	z-index: -1;
+}
+
+label, button, input, h4, a {
+	font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+	color: #555;
+}
+#advanced {
+	float: right;
+	margin-top: 10px;
+	margin-right: 10px;
+	width: 180px;
+	display: none;
+}
+button {
+	cursor: p
+	background-color: #111;
+}
+button, input {
+	border: 1px solid #333;
+}
+#advanced-button {
+	float: right;
+	width: 80px;
+	height: 30px;
+	border: 1px solid #333;
+}
+#advanced-button.classic {
+	background-color: black;
+	color: #444;
+}
+h4 {
+	margin-bottom: 5px;
+}
+input {
+	margin-left:4px;
+	float:right;
+	width: 40px;
+	background-color: black;
+	padding: 2px;
+}
+#form {
+	margin-top: 40px;
+	display: none;
+}
+.input {
+	height: 22px;
+}
+.preset {
+	border: 1px solid #333;
+	width: 40%;
+}
+
+#github {
+	position:absolute;
+	bottom:5px;
+	left:5px;
+}
+

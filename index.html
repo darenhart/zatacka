@@ -1,80 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Zatacka by banha</title>
-		<style>
-			body {
-				margin: 0px;
-				background-color: black;
-			}
-			canvas {
-				position: absolute;
-			}
-			#screens {
-				z-index: -4;
-			}
-			#main {
-				z-index: -3;
-			}
-			#score {
-				z-index: -2;
-			}
-			#texts {
-				z-index: -1;
-			}
-			
-			#advanced {
-				float: right;
-				margin-top: 10px;
-				margin-right: 10px;
-				color: #555;
-				width: 180px;
-				display: none;
-			}
-			button {
-				background-color: #111;
-				color: #555;
-			}
-			#advanced-button {
-				float: right;
-				width: 80px;
-				height: 30px;
-				border: 1px solid #333;
-				color: #555;
-			}
-			#advanced-button.classic {
-				background-color: black;
-				border: 1px solid #222;
-				color: #333;
-			}
-			label, button, input, h4 {
-				font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
-			}
-			h4 {
-				margin-bottom: 5px;
-			}
-			input {
-				margin-left:4px;
-				float:right;
-				width: 40px;
-				background-color: black;
-				border: 1px solid #333;
-				color: #555;
-				padding: 2px;
-			}
-			#form {
-				margin-top: 40px;
-				display: none;
-			}
-			.input {
-				height: 22px;
-			}
-			.preset {
-				border: 1px solid #333;
-				width: 40%;
-			}
-			
-		</style>
+		<title>Zatacka by Daniel Arenhart</title>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body oncontextmenu="return false" onresize="game.onSizeChange()">
 
@@ -123,6 +51,10 @@
 				</div>
 			</div>
 		</div>
+
+		<footer id="github">
+			<a target="_blank" href="https://github.com/darenhart/zatacka">Github</a>
+		</footer>
 
 		<script src="conf.js"></script>
 		<script src="Keys.js"></script>

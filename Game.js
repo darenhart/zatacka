@@ -51,7 +51,7 @@ function Background() {
 function SplashScreen() {
 
 	this.active = true;
-	var timeout = 1000;
+	var timeout = 100;
 	var counter = 0;
 
 	this.draw = function() {
@@ -207,6 +207,7 @@ function Game() {
 		this.splash.clear();
 		this.advanced.show();
 		this.selectPlayers.show();
+		document.getElementById('github').style.display = 'block';
 	}
 
 	this.start = function() {
@@ -218,6 +219,7 @@ function Game() {
 		this.selectPlayers.clear();
 		this.score.draw();
 		this.newRound();
+		document.getElementById('github').style.display = 'none';
 	};
 
 	this.newRound = function() {
